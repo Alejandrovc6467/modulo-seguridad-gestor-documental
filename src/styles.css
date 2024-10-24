@@ -1,0 +1,97 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+*{
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+:root{
+  --nav-width: 92px;/**/
+  
+  /*===== Colores =====*/
+  --first-color: #0C5DF4;
+  --bg-color: #12192C;
+  --bg-color-principal-secundario: #1f2637;
+  --bg-color-secundario: #daa520;
+  --sub-color: #B6CEFC;
+  --white-color: #FFF;
+    
+  /*===== Fuente y tipografia =====*/
+  --body-font: 'Poppins', sans-serif;
+  --normal-font-size: 1rem;
+  --small-font-size: .875rem;
+}
+
+
+
+.pagina{
+  width: 100%;
+  padding-bottom: 50px;
+}
+
+.ruta_contendor{
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 15px;
+}
+
+.ruta_contendor img{
+  width: 30px;
+  margin-right: 5px;
+}
+
+.ruta_contendor h5{
+  color: rgb(89, 94, 110);
+}
+
+.icono_contenedor{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+
+/*configuraciones para los botones de guardar en general*/
+.boton_amarillo {
+  background-color: var(--bg-color-secundario) !important; 
+  color: white !important;
+}
+/* Estilos para el botón deshabilitado */
+.boton_amarillo:disabled,
+.boton_amarillo[disabled] {
+  background-color: #d3b301ab !important; /* Un amarillo más claro */
+  color: #ffffff !important; /* Un gris oscuro para el texto */
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+/* Para asegurarnos de que los estilos se apliquen incluso con la especificidad de Angular Material */
+.mat-flat-button.mat-button-disabled.mat-button-disabled.boton_amarillo {
+  background-color: #d3b301ab !important;
+  color: #ffffff !important;
+}
+
+
+
+
+/*Animacion*/
+.animacion {
+  position: relative; 
+  animation: slideInLeft 1s ease forwards;
+}
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-5%);
+    opacity: 0; 
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
