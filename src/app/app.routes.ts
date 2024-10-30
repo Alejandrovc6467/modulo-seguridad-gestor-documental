@@ -8,6 +8,8 @@ import { UsuariosComponent } from './pages/usuarios/usuarios.component';
 import { RolesComponent } from './pages/roles/roles.component';
 import { UsuarionormaComponent } from './pages/usuarionorma/usuarionorma.component';
 import { PermisosComponent } from './pages/permisos/permisos.component';
+import { RolespermisosComponent } from './pages/rolespermisos/rolespermisos.component';
+import { OficinaspermiososComponent } from './pages/oficinaspermiosos/oficinaspermiosos.component';
 
 
 
@@ -21,9 +23,11 @@ export const routes: Routes = [
 
     
     {path: 'oficinas', component:OficinasComponent},
+    {path: 'oficinaspermisos', component:OficinaspermiososComponent},
     {path: 'usuarios', component:UsuariosComponent},
     {path: 'usuarionorma', component:UsuarionormaComponent},
     {path: 'roles', component:RolesComponent},
+    {path: 'rolespermisos', component:RolespermisosComponent},
     {path: 'permisos', component:PermisosComponent},
  
 
