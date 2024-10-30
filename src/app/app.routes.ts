@@ -2,9 +2,12 @@ import { Routes } from '@angular/router';
 
 
 import { OficinasComponent } from './pages/oficinas/oficinas.component';
-import { PruebaComponent } from './pages/prueba/prueba.component';
+
 import { IniciosesionprincipalComponent } from './pages/iniciosesionprincipal/iniciosesionprincipal.component';
 import { UsuariosComponent } from './pages/usuarios/usuarios.component';
+import { RolesComponent } from './pages/roles/roles.component';
+import { UsuarionormaComponent } from './pages/usuarionorma/usuarionorma.component';
+import { PermisosComponent } from './pages/permisos/permisos.component';
 
 
 
@@ -19,12 +22,11 @@ export const routes: Routes = [
     
     {path: 'oficinas', component:OficinasComponent},
     {path: 'usuarios', component:UsuariosComponent},
+    {path: 'usuarionorma', component:UsuarionormaComponent},
+    {path: 'roles', component:RolesComponent},
+    {path: 'permisos', component:PermisosComponent},
  
 
-
-
-    
-    {path: 'pruebas', component:PruebaComponent},
 
 
 

@@ -1,4 +1,4 @@
-export interface CategoriaDTO {
+export interface PermisoDTO {
     id?: number,
     nombre: string;
     descripcion: string;
