@@ -29,19 +29,3 @@
     display: flex;
     justify-content: flex-end;
 }
-
-
-.checkbox-group {
-
-    width: 100%;
-    max-width: 1000px;
-    display: flex;
-    align-content: start;
-    padding-left: 15px;
-    padding-bottom: 20px;
-  }
-  
-  .checkbox-group mat-checkbox {
-    margin-right: 50px;
-    
-  }

@@ -75,11 +75,20 @@ export class RolesComponent {
       categoria.activo = true;
       console.log(categoria);
       this.rolService.crearCategoria(categoria).subscribe(response => {
+
+
         console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.formulario.reset();
-        this.limpiarErroresFormulario();
-        Swal.fire('Creado!', 'El permiso ha sido creado.', 'success');
+
+        if(response){
+          this.obtenerCategoriasCargarTabla();
+          this.formulario.reset();
+          this.limpiarErroresFormulario();
+          Swal.fire('Creado!', 'El rol ha sido creado.', 'success');
+        }else{
+          Swal.fire('Error!', 'El rol no ha sido creado.', 'error');
+        }
+       
+       
       });
 
     }
@@ -140,7 +149,7 @@ export class RolesComponent {
   eliminarCategoria(idEliminar: number) {
     // Mostrar el SweetAlert para confirmar la eliminación
     Swal.fire({
-        title: '¿Desea eliminar el permiso?',
+        title: '¿Desea eliminar el rol?',
         text: 'Esta acción no se puede deshacer.',
         icon: 'warning',
         showCancelButton: true,
@@ -155,7 +164,7 @@ export class RolesComponent {
             this.rolService.eliminarCategoria(idEliminar).subscribe(response => {
                 console.log(response);
                 this.obtenerCategoriasCargarTabla();
-                Swal.fire('Eliminado!', 'La categoría ha sido eliminada.', 'success');
+                Swal.fire('Eliminado!', 'La rol ha sido eliminado.', 'success');
             });
         }
     });

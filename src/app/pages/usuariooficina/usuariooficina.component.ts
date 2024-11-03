@@ -11,7 +11,6 @@ import { PermisoDTO } from '../../Core/models/PermisoDTO';
 import { PermisooficinaService } from '../../Core/services/permisooficina.service';
 import { OficinasService } from '../../Core/services/oficinas.service';
 import { PermisosService } from '../../Core/services/permisos.service';
-import { UsuariosService } from '../../Core/services/usuarios.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,39 +21,31 @@ import { OficinaDTO } from '../../Core/models/OficinaDTO';
 import { OficinaGestorDTO } from '../../Core/models/OficinaGestorDTO';
 import { OficinasgestorasService } from '../../Core/services/oficinasgestoras.service';
 import { OficinasgestoridsService } from '../../Core/services/oficinasgestorids.service';
-import { UsuarionormaService } from '../../Core/services/usuarionorma.service';
-import { NormasService } from '../../Core/services/normas.service';
-import { NormaDTO } from '../../Core/models/NormaDTO';
-import { UsuarioNormaDTO, UsuarioNormaExtendidaDTO } from '../../Core/models/UsuarioNormaDTO';
 
 
 @Component({
-  selector: 'app-usuarionorma',
+  selector: 'app-usuariooficina',
   standalone: true,
   imports: [CommonModule,MatButtonModule,  MatFormFieldModule, MatSelectModule,ReactiveFormsModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, FormsModule],
-  templateUrl: './usuarionorma.component.html',
-  styleUrl: './usuarionorma.component.css'
+  templateUrl: './usuariooficina.component.html',
+  styleUrl: './usuariooficina.component.css'
 })
-export class UsuarionormaComponent {
+export class UsuariooficinaComponent {
 
-  usuarionormaService = inject(UsuarionormaService);
-  normaService = inject(NormasService);
-  usuarioService = inject(UsuariosService);
+  
+  permisoOficinaService = inject(PermisooficinaService);
+  oficinasgestorasService = inject(OficinasgestorasService);
+  oficinasgestoridsService = inject(OficinasgestoridsService);
   oficinaService = inject(OficinasService);
-
+  permisoService = inject(PermisosService);
+  listaOficinasGestores! : OficinaGestorIdsDTO[];
   oficinas!: OficinaDTO[];
-  normas!: NormaDTO[];
-  usuarios!: UsuarioDTO[];
-
-  listaUsuariosNormas! : UsuarioNormaDTO[];
- 
-
- 
-  usuariosParaTabla!: UsuarioDTO[];
+  permisos!: PermisoDTO[];
+  oficinasGestoras!: OficinaGestorDTO[];
 
 
-  listaUsuariosNormasDataSource = new MatTableDataSource<UsuarioNormaExtendidaDTO>([]);
-  displayedColumns: string[] = [ 'acciones', 'norma', 'usuario'];
+  listaOficinasGestoresDataSource = new MatTableDataSource<OficinaGestorIdsExtendidaDTO>([]);
+  displayedColumns: string[] = [ 'acciones', 'oficina', 'gestor'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   textoBuscar: string = "";
   estaEditando: boolean = false;
@@ -63,17 +54,9 @@ export class UsuarionormaComponent {
 
   ngOnInit(): void {
     this.obtenerOficinas();
-    this.obtenerNormas();
-    this.obtenerUsuariosParaCargarTabla();
-    this.obtenerUsuariosNormasCargarTabla();
+    this.obtenerOficinasGestoras();
+    this.obtenerOficinasGestoresCargarTabla();
     this.formulario.updateValueAndValidity();
-
-    // Suscribirse a los cambios del select de oficina
-    this.formulario.get('oficinaID')?.valueChanges.subscribe(oficinaID => {
-      this.obtenerUsuariosPorOficina(oficinaID ?? 0); // Asume 0 o un valor predeterminado si es null
-    });
-    
-    
   }
   
   constructor(){}
@@ -81,8 +64,7 @@ export class UsuarionormaComponent {
   private formbuilder = inject(FormBuilder);
   formulario = this.formbuilder.group({
     oficinaID: [0, [Validators.required]],
-    normaID: [0, [Validators.required]],
-    usuarioID: [0, [Validators.required]]
+    gestorID: [0, [Validators.required]],
   });
 
   obtenerOficinas() {
@@ -91,29 +73,10 @@ export class UsuarionormaComponent {
     });
   }
 
-  obtenerUsuariosParaCargarTabla(){
-    this.usuarioService.obtenerUsuarios().subscribe(response => {
-      this.usuariosParaTabla = response;
-    });
-  }
-
-
-  obtenerNormas(){
-    this.normaService.obtenerNormas().subscribe(response => {
-      this.normas = response;
+  obtenerOficinasGestoras(){
+    this.oficinasgestorasService.obtenerOficinasGestoras().subscribe(response => {
+      this.oficinasGestoras = response;
   })};
-
-
-  obtenerUsuariosPorOficina(oficinaID: number) {
-    if (oficinaID) {
-      this.usuarioService.obtenerUsuariosPorOficina(oficinaID).subscribe(usuarios => {
-        this.usuarios = usuarios;
-      });
-    } else {
-      this.usuarios = [];
-    }
-  }
-
 
 
  
@@ -124,8 +87,8 @@ export class UsuarionormaComponent {
 
 
   obtenerUsuarios(){
-    this.usuarionormaService.obtenerUsuariosNormas().subscribe(response => {
-      this.listaUsuariosNormas = response;
+    this.oficinasgestoridsService.obtenerOficinasGestoresIds().subscribe(response => {
+      this.listaOficinasGestores = response;
     });
   }
 
@@ -133,45 +96,42 @@ export class UsuarionormaComponent {
 
   crearUsuario(){
     
-    
-      if(this.formulario.value.normaID != 0  && this.formulario.value.oficinaID != 0  &&  this.formulario.value.usuarioID != 0  ){
-        
-        const usuarioNormaDTO = {
-          normaID: this.formulario.value.normaID || 0,
-          usuarioID: this.formulario.value.usuarioID || 0
+    if(this.formulario.invalid){
+      alert("Formulario invalido");
+    }else{
+
+      const oficinaGestorIdsDTO = this.formulario.value as OficinaGestorIdsDTO; 
+      
+      // Asegurarse de que clasificacionId sea un número válido
+      // permisoOficina.clasificacionID = Number(permisoOficina.clasificacionID);
+
+      console.log(oficinaGestorIdsDTO);
+  
+      this.oficinasgestoridsService.crearOficinaGestor(oficinaGestorIdsDTO).subscribe(response => {
+
+        console.log(response);
+        if(response){
+          this.obtenerOficinasGestoresCargarTabla();
+          this.formulario.reset();
+          this.limpiarErroresFormulario();
+          Swal.fire('Creado!', 'Se ha asignado la oficina a una oficina gestor correctamente.', 'success');
+        }else{
+          Swal.fire('Error!', 'No se ha asignado la oficina a una oficina gestor correctamente.', 'error');
         }
-        console.log(usuarioNormaDTO);
-    
-        this.usuarionormaService.crearUsuarioNorma(usuarioNormaDTO).subscribe(response => {
+       
+      
+      });
 
-          console.log(response);
-          if(response){
-            this.obtenerUsuariosNormasCargarTabla();
-            this.formulario.reset();
-            this.limpiarErroresFormulario();
-            Swal.fire('Creado!', 'Se ha asignado el usuario a una norma correctamente.', 'success');
-          }else{
-            Swal.fire('Error!', 'No se ha asignado el usuario a una norma correctamente.', 'error');
-          }
-        
-        
-        });
-
-      }else{
-        Swal.fire('Error!', 'Todos los campos son requeridos.', 'error');
-      }
-
-  }
+    }
       
   
-  
+  }
   
 
  
 
   
   eliminarUsuario(element: any) {
-    
     // Mostrar el SweetAlert para confirmar la eliminación
     Swal.fire({
         title: '¿Desea eliminar el oficina permiso?',
@@ -186,16 +146,16 @@ export class UsuarionormaComponent {
         if (result.isConfirmed) {
             // Si el usuario confirma, proceder con la eliminación
             try {
-                this.usuarionormaService.eliminarUsuarioNorma(element).subscribe({
+                this.permisoOficinaService.eliminarPermisoOficina(element).subscribe({
                     next: (response) => {
-                        this.obtenerUsuariosNormasCargarTabla();
+                        this.obtenerOficinasGestoresCargarTabla();
                         this.formulario.reset();
                         this.limpiarErroresFormulario();
-                        Swal.fire('Listo!', 'Se ha eliminado correctamente.', 'success');
+                        Swal.fire('Listo!', 'Se ha eliminado el oficina permiso correctamente.', 'success');
                     },
                     error: (err) => {
-                        console.error('Error al eliminar:', err);
-                        Swal.fire('Error!', 'Ocurrió un error al intentar eliminar.', 'error');
+                        console.error('Error al eliminar el permiso:', err);
+                        Swal.fire('Error!', 'Ocurrió un error al intentar eliminar el oficina permiso.', 'error');
                     }
                 });
             } catch (error) {
@@ -203,10 +163,9 @@ export class UsuarionormaComponent {
                 Swal.fire('Error!', 'Se produjo un error inesperado.', 'error');
             }
         } else {
-            Swal.fire('Error!', 'No ha sido eliminado.', 'error');
+            Swal.fire('Error!', 'El oficina permiso no ha sido eliminado.', 'error');
         }
     });
-    
   }
 
     
@@ -216,33 +175,35 @@ export class UsuarionormaComponent {
 
   // Otros **********************************************************
 
-  obtenerUsuariosNormasCargarTabla(){
-    this.usuarionormaService.obtenerUsuariosNormas().subscribe(response => {
-      this.listaUsuariosNormas = response;
-      this.setTable(this.listaUsuariosNormas);
+  obtenerOficinasGestoresCargarTabla(){
+    this.oficinasgestoridsService.obtenerOficinasGestoresIds().subscribe(response => {
+      this.listaOficinasGestores = response;
+      this.setTable(this.listaOficinasGestores);
     });
   }
 
-  setTable(data:UsuarioNormaDTO[]){
+  setTable(data:OficinaGestorIdsDTO[]){
 
     //voy simular una espera con este setTime
     setTimeout(() => {
 
       // Mapear los datos para agregar el nombre de la clasificación
-      const dataConClasificacionNombre: UsuarioNormaExtendidaDTO[] = data.map(usuariosNormas => {
+      const dataConClasificacionNombre: OficinaGestorIdsExtendidaDTO[] = data.map(oficinaGestorLista => {
 
-        const usuario = this.usuariosParaTabla.find(usuario => usuario.id === usuariosNormas.usuarioID);
-        const norma = this.normas.find(norma => norma.id === usuariosNormas.normaID);
+        const oficina = this.oficinas.find(oficina => oficina.id === oficinaGestorLista.oficinaID);
+        const oficinaGestor = this.oficinasGestoras.find(oficinaGestor => oficinaGestor.id === oficinaGestorLista.gestorID);
         return {
-          ...usuariosNormas,
-          nombreUsuario: usuario ? usuario.nombre : 'Sin nombre',
-          nombreNorma: norma ? norma.nombre : 'Sin nombre'
+          ...oficinaGestorLista,
+         
+          oficinaNombre: oficina ? oficina.nombre : 'Sin nombre',
+          gestorNombre: oficinaGestor ? oficinaGestor.nombre : 'Sin nombre'
+
         
         };
       });
       // Configurar el DataSource con los datos modificados
-      this.listaUsuariosNormasDataSource = new MatTableDataSource<UsuarioNormaExtendidaDTO>(dataConClasificacionNombre);
-      this.listaUsuariosNormasDataSource.paginator = this.paginator;
+      this.listaOficinasGestoresDataSource = new MatTableDataSource<OficinaGestorIdsExtendidaDTO>(dataConClasificacionNombre);
+      this.listaOficinasGestoresDataSource.paginator = this.paginator;
 
     }, 3000);
   }
@@ -278,7 +239,6 @@ export class UsuarionormaComponent {
   }
  
   onSearchChange(event: any) {
-    /*
     const filterValue = event.target.value?.trim().toLowerCase() || '';
     if (!filterValue) {
       // Si esta vacio, mostrar toda la lista
@@ -286,7 +246,6 @@ export class UsuarionormaComponent {
       return;
     }
     //pude haber hecho todo el filtro aqui, pero se requeria la necesidad del boton buscar
-    */
   }
 
 

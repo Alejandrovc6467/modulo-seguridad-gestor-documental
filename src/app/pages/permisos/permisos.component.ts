@@ -70,11 +70,18 @@ export class PermisosComponent {
       console.log(categoria);
   
       this.permisoService.crearCategoria(categoria).subscribe(response => {
+
         console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.formulario.reset();
-        this.limpiarErroresFormulario();
-        Swal.fire('Creado!', 'El permiso ha sido creado.', 'success');
+
+        if(response){
+          this.obtenerCategoriasCargarTabla();
+          this.formulario.reset();
+          this.limpiarErroresFormulario();
+          Swal.fire('Creado!', 'El permiso ha sido creado.', 'success');
+        }else{
+          Swal.fire('Error!', 'El permiso no ha sido creado.', 'error');
+        }
+       
       });
 
     }
@@ -88,14 +95,22 @@ export class PermisosComponent {
       const categoriaActualizada: PermisoDTO = {
         id: this.categoriaSeleccionada.id,
         nombre: this.formulario.value.nombre!,
-        descripcion: this.formulario.value.descripcion!
+        descripcion: this.formulario.value.descripcion!,
+        activo: true
       };
       this.permisoService.actualizarCategoria(categoriaActualizada).subscribe(response => {
+
         console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.cancelarEdicion();
-        this.limpiarErroresFormulario();
-        Swal.fire('Editado!', 'El permiso ha sido editado.', 'success');
+        if(response){
+          this.obtenerCategoriasCargarTabla();
+          this.cancelarEdicion();
+          this.limpiarErroresFormulario();
+          Swal.fire('Editado!', 'El permiso ha sido editado.', 'success');
+        }else{
+          Swal.fire('Error!', 'El permiso no ha sido editado.', 'error');
+        }
+       
+       
       });
   }
 

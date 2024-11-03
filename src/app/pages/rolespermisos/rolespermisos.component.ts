@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { UsuarioDTO,UsuarioExtendidaDTO } from '../../Core/models/UsuarioDTO';
 import { RolDTO } from '../../Core/models/RolDTO';
 import { PermisoDTO } from '../../Core/models/PermisoDTO';
-import { UsuariosService } from '../../Core/services/usuarios.service';
+import { PermisorolService } from '../../Core/services/permisorol.service';
 import { RolesService } from '../../Core/services/roles.service';
 import { PermisosService } from '../../Core/services/permisos.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -17,6 +17,7 @@ import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { PermisoRolDTO, PermisoRolExtendidaDTO } from '../../Core/models/PermisoRolDTO';
 
 @Component({
   selector: 'app-rolespermisos',
@@ -28,15 +29,15 @@ import Swal from 'sweetalert2';
 export class RolespermisosComponent {
 
   
-  usuariosService = inject(UsuariosService);
+  permisorolService = inject(PermisorolService);
   rolService = inject(RolesService);
   permisoService = inject(PermisosService);
-  listaUsuarios! : UsuarioDTO[];
+  listaUsuarios! : PermisoRolDTO[];
   roles!: RolDTO[];
   permisos!: PermisoDTO[];
 
 
-  listaUsuariosDataSource = new MatTableDataSource<UsuarioExtendidaDTO>([]);
+  listaRolesPermisosDataSource = new MatTableDataSource<PermisoRolExtendidaDTO>([]);
   displayedColumns: string[] = [ 'acciones', 'rol', 'permiso'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   textoBuscar: string = "";
@@ -73,7 +74,7 @@ export class RolespermisosComponent {
 
   //CRUD **********************************************************
   obtenerUsuarios(){
-    this.usuariosService.obtenerUsuarios().subscribe(response => {
+    this.permisorolService.obtenerPermisoRol().subscribe(response => {
       this.listaUsuarios = response;
     });
 
@@ -81,12 +82,7 @@ export class RolespermisosComponent {
 
   }
 
-  obtenerUsuarioPorId(idBuscar:number){
-    //const idBuscar: number = 1;
-    this.usuariosService.obtenerUsuarioPorId(idBuscar).subscribe(response => {
-      console.log(response);
-    });
-  }
+
 
   crearUsuario(){
     
@@ -94,87 +90,43 @@ export class RolespermisosComponent {
       alert("Formulario invalido");
     }else{
 
-      const usuario = this.formulario.value as UsuarioDTO; 
+      const permisoRol = this.formulario.value as PermisoRolDTO; 
       
       // Asegurarse de que clasificacionId sea un número válido
-      // usuario.clasificacionID = Number(usuario.clasificacionID);
+      // permisoRol.clasificacionID = Number(permisoRol.clasificacionID);
 
-      console.log(usuario);
+      console.log(permisoRol);
   
-      this.usuariosService.crearUsuario(usuario).subscribe(response => {
+      this.permisorolService.crearPermisoRol(permisoRol).subscribe(response => {
+
         console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.formulario.reset();
-        this.limpiarErroresFormulario();
-        Swal.fire('Creada!', 'La categoría ha sido creada.', 'success');
+        if(response){
+          this.obtenerCategoriasCargarTabla();
+          this.formulario.reset();
+          this.limpiarErroresFormulario();
+          Swal.fire('Creado!', 'Se ha asignado el permiso al rol correctamente.', 'success');
+        }else{
+          Swal.fire('Error!', 'No se ha asignado el permiso al rol correctamente.', 'error');
+        }
+       
+      
       });
 
     }
+      
   
   }
+  
 
-  actualizarUsuario() {
+ 
 
-    /*
-    if (!this.usuarioSeleccinado) return;
-      const usuarioActualizado: UsuarioDTO = {
-        id: this.usuarioSeleccinado.id,
-        nombre: this.formulario.value.nombre!,
-        apellido: this.formulario.value.apellido!,
-        correo: this.formulario.value.correo!,
-        password: this.formulario.value.password!,
-        rolID: this.formulario.value.rolID!,
-        activo: true,
-        eliminado: false
-      };
+  
+  eliminarUsuario(element: any) {
 
-      console.log(this.usuarioSeleccinado);
-      this.usuariosService.actualizarUsuario(usuarioActualizado).subscribe(response => {
-        console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.cancelarEdicion();
-        this.limpiarErroresFormulario();
-        Swal.fire('Editada!', 'La categoría ha sido editada.', 'success');
-      });
-
-      */
-      
-  }
-
-
-  editarUsuario(element: UsuarioDTO) {
-    /*
     
-    // Método para cargar los datos de la categoría seleccionada y activar el modo de edición
-    this.estaEditando = true;
-    this.usuarioSeleccinado = element;
-    // Cargar los datos de la categoría en el formulario
-    this.formulario.patchValue({
-      nombre: element.nombre,
-      apellido: element.apellido,
-      correo: element.correo,
-      password: element.password,
-      rolID: element.rolID
-    });
-    this.limpiarErroresFormulario();
-    
-    */
-  }
-
-  cancelarEdicion() {
-    this.estaEditando = false;
-    this.usuarioSeleccinado = null;
-    this.formulario.reset(); // Limpiar el formulario
-    this.formulario.markAsPristine();  // Marcar como 'pristino'
-    this.formulario.markAsUntouched(); // Marcar como 'intacto'
-    this.formulario.updateValueAndValidity(); // Recalcular estado de validez
-  }
-
-
-  eliminarUsuario(idEliminar: number) {
     // Mostrar el SweetAlert para confirmar la eliminación
     Swal.fire({
-        title: '¿Desea eliminar el Usuario?',
+        title: '¿Desea eliminar el PermisoRol?',
         text: 'Esta acción no se puede deshacer.',
         icon: 'warning',
         showCancelButton: true,
@@ -186,16 +138,24 @@ export class RolespermisosComponent {
     }).then((result) => {
         if (result.isConfirmed) {
             // Si el usuario confirma, proceder con la eliminación
-            this.usuariosService.eliminarUsuario(idEliminar).subscribe(response => {
-                console.log(response);
+            this.permisorolService.eliminarPermisoRol(element).subscribe(response => {
+
+             
                 this.obtenerCategoriasCargarTabla();
-                Swal.fire('Eliminado!', 'El usuario ha sido eliminado.', 'success');
+                this.formulario.reset();
+                this.limpiarErroresFormulario();
+                Swal.fire('Creado!', 'Se ha eliminado el PermisoRol correctamente.', 'success');
+             
+             
             });
         }else{
-          Swal.fire('Error!', 'El usuario no ha sido eliminado.', 'error');
+          Swal.fire('Error!', 'El PermisoRol no ha sido eliminado.', 'error');
         }
     });
+
+    
   }
+    
 
 
   
@@ -203,29 +163,33 @@ export class RolespermisosComponent {
   // Otros **********************************************************
 
   obtenerCategoriasCargarTabla(){
-    this.usuariosService.obtenerUsuarios().subscribe(response => {
+    this.permisorolService.obtenerPermisoRol().subscribe(response => {
       this.listaUsuarios = response;
       this.setTable(this.listaUsuarios);
     });
   }
 
-  setTable(data:UsuarioDTO[]){
+  setTable(data:PermisoRolDTO[]){
 
     //voy simular una espera con este setTime
     setTimeout(() => {
 
       // Mapear los datos para agregar el nombre de la clasificación
-      const dataConClasificacionNombre: UsuarioExtendidaDTO[] = data.map(usuario => {
+      const dataConClasificacionNombre: PermisoRolExtendidaDTO[] = data.map(permisorol => {
 
-        const rol = this.roles.find(rol => rol.id === usuario.rolID);
+        const rol = this.roles.find(rol => rol.id === permisorol.rolID);
+        const permiso = this.permisos.find(permiso => permiso.id === permisorol.permisoID);
         return {
-          ...usuario,
+          ...permisorol,
+          permisoNombre:permiso ? permiso.nombre : 'Sin nombre',
           rolNombre: rol ? rol.nombre : 'Sin rol'
+
+        
         };
       });
       // Configurar el DataSource con los datos modificados
-      this.listaUsuariosDataSource = new MatTableDataSource<UsuarioExtendidaDTO>(dataConClasificacionNombre);
-      this.listaUsuariosDataSource.paginator = this.paginator;
+      this.listaRolesPermisosDataSource = new MatTableDataSource<PermisoRolExtendidaDTO>(dataConClasificacionNombre);
+      this.listaRolesPermisosDataSource.paginator = this.paginator;
 
     }, 3000);
   }
@@ -236,6 +200,7 @@ export class RolespermisosComponent {
 
   filtrarData(){
 
+    /*
     const data = this.listaUsuarios.slice();
     if(!this.textoBuscar){
      this.setTable(data);
@@ -243,10 +208,11 @@ export class RolespermisosComponent {
     }
 
     const dataFiltrada = data.filter(item => {
-      return item.nombre.includes(this.textoBuscar);
+      return item.permisoID.includes(this.textoBuscar);
     })
 
     this.setTable(dataFiltrada);
+    */
   }
 
   limpiarFormulario() {

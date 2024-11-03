@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { UsuarioDTO,UsuarioExtendidaDTO } from '../../Core/models/UsuarioDTO';
 import { RolDTO } from '../../Core/models/RolDTO';
 import { PermisoDTO } from '../../Core/models/PermisoDTO';
-import { UsuariosService } from '../../Core/services/usuarios.service';
+import { PermisooficinaService } from '../../Core/services/permisooficina.service';
 import { OficinasService } from '../../Core/services/oficinas.service';
 import { PermisosService } from '../../Core/services/permisos.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -17,7 +17,10 @@ import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { PermisoRolDTO, PermisoRolExtendidaDTO } from '../../Core/models/PermisoRolDTO';
 import { OficinaDTO } from '../../Core/models/OficinaDTO';
+import { PermisoOficinaDTO, PermisoOficinaExtendidaDTO } from '../../Core/models/PermisoOficinaDTO';
+
 
 @Component({
   selector: 'app-oficinaspermiosos',
@@ -28,15 +31,16 @@ import { OficinaDTO } from '../../Core/models/OficinaDTO';
 })
 export class OficinaspermiososComponent {
 
-  usuariosService = inject(UsuariosService);
-  oficinasService = inject(OficinasService);
+  
+  permisoOficinaService = inject(PermisooficinaService);
+  oficinaService = inject(OficinasService);
   permisoService = inject(PermisosService);
-  listaUsuarios! : UsuarioDTO[];
+  listaUsuarios! : PermisoOficinaDTO[];
   oficinas!: OficinaDTO[];
   permisos!: PermisoDTO[];
 
 
-  listaUsuariosDataSource = new MatTableDataSource<UsuarioExtendidaDTO>([]);
+  listaRolesPermisosDataSource = new MatTableDataSource<PermisoOficinaExtendidaDTO>([]);
   displayedColumns: string[] = [ 'acciones', 'rol', 'permiso'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   textoBuscar: string = "";
@@ -45,7 +49,7 @@ export class OficinaspermiososComponent {
 
 
   ngOnInit(): void {
-    this.obtenerRoles();
+    this.obtenerOficinas();
     this.obtenerPermisos();
     this.obtenerCategoriasCargarTabla();
     this.formulario.updateValueAndValidity();
@@ -59,8 +63,8 @@ export class OficinaspermiososComponent {
     permisoID: [0, [Validators.required]],
   });
 
-  obtenerRoles(){
-    this.oficinasService.obtenerOficinas().subscribe(response => {
+  obtenerOficinas(){
+    this.oficinaService.obtenerOficinas().subscribe(response => {
       this.oficinas = response;
   })};
 
@@ -73,7 +77,7 @@ export class OficinaspermiososComponent {
 
   //CRUD **********************************************************
   obtenerUsuarios(){
-    this.usuariosService.obtenerUsuarios().subscribe(response => {
+    this.permisoOficinaService.obtenerPermisosOfinas().subscribe(response => {
       this.listaUsuarios = response;
     });
 
@@ -81,12 +85,7 @@ export class OficinaspermiososComponent {
 
   }
 
-  obtenerUsuarioPorId(idBuscar:number){
-    //const idBuscar: number = 1;
-    this.usuariosService.obtenerUsuarioPorId(idBuscar).subscribe(response => {
-      console.log(response);
-    });
-  }
+
 
   crearUsuario(){
     
@@ -94,87 +93,41 @@ export class OficinaspermiososComponent {
       alert("Formulario invalido");
     }else{
 
-      const usuario = this.formulario.value as UsuarioDTO; 
+      const permisoOficina = this.formulario.value as PermisoOficinaDTO; 
       
       // Asegurarse de que clasificacionId sea un número válido
-      // usuario.clasificacionID = Number(usuario.clasificacionID);
+      // permisoOficina.clasificacionID = Number(permisoOficina.clasificacionID);
 
-      console.log(usuario);
+      console.log(permisoOficina);
   
-      this.usuariosService.crearUsuario(usuario).subscribe(response => {
+      this.permisoOficinaService.crearPermisoOficina(permisoOficina).subscribe(response => {
+
         console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.formulario.reset();
-        this.limpiarErroresFormulario();
-        Swal.fire('Creada!', 'La categoría ha sido creada.', 'success');
+        if(response){
+          this.obtenerCategoriasCargarTabla();
+          this.formulario.reset();
+          this.limpiarErroresFormulario();
+          Swal.fire('Creado!', 'Se ha asignado el permiso a la oficina correctamente.', 'success');
+        }else{
+          Swal.fire('Error!', 'No se ha asignado el permiso a la oficina correctamente.', 'error');
+        }
+       
+      
       });
 
     }
+      
   
   }
+  
 
-  actualizarUsuario() {
+ 
 
-    /*
-    if (!this.usuarioSeleccinado) return;
-      const usuarioActualizado: UsuarioDTO = {
-        id: this.usuarioSeleccinado.id,
-        nombre: this.formulario.value.nombre!,
-        apellido: this.formulario.value.apellido!,
-        correo: this.formulario.value.correo!,
-        password: this.formulario.value.password!,
-        rolID: this.formulario.value.rolID!,
-        activo: true,
-        eliminado: false
-      };
-
-      console.log(this.usuarioSeleccinado);
-      this.usuariosService.actualizarUsuario(usuarioActualizado).subscribe(response => {
-        console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.cancelarEdicion();
-        this.limpiarErroresFormulario();
-        Swal.fire('Editada!', 'La categoría ha sido editada.', 'success');
-      });
-
-      */
-      
-  }
-
-
-  editarUsuario(element: UsuarioDTO) {
-    /*
-    
-    // Método para cargar los datos de la categoría seleccionada y activar el modo de edición
-    this.estaEditando = true;
-    this.usuarioSeleccinado = element;
-    // Cargar los datos de la categoría en el formulario
-    this.formulario.patchValue({
-      nombre: element.nombre,
-      apellido: element.apellido,
-      correo: element.correo,
-      password: element.password,
-      rolID: element.rolID
-    });
-    this.limpiarErroresFormulario();
-    
-    */
-  }
-
-  cancelarEdicion() {
-    this.estaEditando = false;
-    this.usuarioSeleccinado = null;
-    this.formulario.reset(); // Limpiar el formulario
-    this.formulario.markAsPristine();  // Marcar como 'pristino'
-    this.formulario.markAsUntouched(); // Marcar como 'intacto'
-    this.formulario.updateValueAndValidity(); // Recalcular estado de validez
-  }
-
-
-  eliminarUsuario(idEliminar: number) {
+  
+  eliminarUsuario(element: any) {
     // Mostrar el SweetAlert para confirmar la eliminación
     Swal.fire({
-        title: '¿Desea eliminar el Usuario?',
+        title: '¿Desea eliminar el oficina permiso?',
         text: 'Esta acción no se puede deshacer.',
         icon: 'warning',
         showCancelButton: true,
@@ -182,20 +135,33 @@ export class OficinaspermiososComponent {
         cancelButtonColor: '#3085d6',
         cancelButtonText: 'Cancelar',
         confirmButtonText: 'Eliminar'
-     
     }).then((result) => {
         if (result.isConfirmed) {
             // Si el usuario confirma, proceder con la eliminación
-            this.usuariosService.eliminarUsuario(idEliminar).subscribe(response => {
-                console.log(response);
-                this.obtenerCategoriasCargarTabla();
-                Swal.fire('Eliminado!', 'El usuario ha sido eliminado.', 'success');
-            });
-        }else{
-          Swal.fire('Error!', 'El usuario no ha sido eliminado.', 'error');
+            try {
+                this.permisoOficinaService.eliminarPermisoOficina(element).subscribe({
+                    next: (response) => {
+                        this.obtenerCategoriasCargarTabla();
+                        this.formulario.reset();
+                        this.limpiarErroresFormulario();
+                        Swal.fire('Listo!', 'Se ha eliminado el oficina permiso correctamente.', 'success');
+                    },
+                    error: (err) => {
+                        console.error('Error al eliminar el permiso:', err);
+                        Swal.fire('Error!', 'Ocurrió un error al intentar eliminar el oficina permiso.', 'error');
+                    }
+                });
+            } catch (error) {
+                console.error('Error en la operación de eliminación:', error);
+                Swal.fire('Error!', 'Se produjo un error inesperado.', 'error');
+            }
+        } else {
+            Swal.fire('Error!', 'El oficina permiso no ha sido eliminado.', 'error');
         }
     });
   }
+
+    
 
 
   
@@ -203,33 +169,35 @@ export class OficinaspermiososComponent {
   // Otros **********************************************************
 
   obtenerCategoriasCargarTabla(){
-    this.usuariosService.obtenerUsuarios().subscribe(response => {
+    this.permisoOficinaService.obtenerPermisosOfinas().subscribe(response => {
       this.listaUsuarios = response;
       this.setTable(this.listaUsuarios);
     });
   }
 
-  setTable(data:UsuarioDTO[]){
+  setTable(data:PermisoOficinaDTO[]){
 
-    /*
     //voy simular una espera con este setTime
     setTimeout(() => {
 
       // Mapear los datos para agregar el nombre de la clasificación
-      const dataConClasificacionNombre: UsuarioExtendidaDTO[] = data.map(usuario => {
+      const dataConClasificacionNombre: PermisoOficinaExtendidaDTO[] = data.map(permisoOficina => {
 
-        const rol = this.roles.find(rol => rol.id === usuario.rolID);
+        const oficina = this.oficinas.find(oficina => oficina.id === permisoOficina.oficinaID);
+        const permiso = this.permisos.find(permiso => permiso.id === permisoOficina.permisoID);
         return {
-          ...usuario,
-          rolNombre: rol ? rol.nombre : 'Sin rol'
+          ...permisoOficina,
+          permisoNombre:permiso ? permiso.nombre : 'Sin nombre',
+          oficinaNombre: oficina ? oficina.nombre : 'Sin Oficina'
+
+        
         };
       });
       // Configurar el DataSource con los datos modificados
-      this.listaUsuariosDataSource = new MatTableDataSource<UsuarioExtendidaDTO>(dataConClasificacionNombre);
-      this.listaUsuariosDataSource.paginator = this.paginator;
+      this.listaRolesPermisosDataSource = new MatTableDataSource<PermisoOficinaExtendidaDTO>(dataConClasificacionNombre);
+      this.listaRolesPermisosDataSource.paginator = this.paginator;
 
     }, 3000);
-    */
   }
   
   realizarBusqueda() {
@@ -238,6 +206,7 @@ export class OficinaspermiososComponent {
 
   filtrarData(){
 
+    /*
     const data = this.listaUsuarios.slice();
     if(!this.textoBuscar){
      this.setTable(data);
@@ -245,10 +214,12 @@ export class OficinaspermiososComponent {
     }
 
     const dataFiltrada = data.filter(item => {
-      return item.nombre.includes(this.textoBuscar);
+      return item.oficinaID.includes(this.textoBuscar);
     })
 
     this.setTable(dataFiltrada);
+    */
+    
   }
 
   limpiarFormulario() {

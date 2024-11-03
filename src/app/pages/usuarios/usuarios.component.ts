@@ -277,14 +277,9 @@ export class UsuariosComponent {
     const nombre = this.formulario.controls.nombre;
    
     if (nombre.hasError('required')) {
-      return 'El campo nombre es obligatorio';
+      return 'El campo es requerido';
     }
 
-    
-    if (nombre.hasError('pattern')) {
-      return 'El campo nombre solo puede contener letras';
-    }
-    
     return ''; 
   }
 

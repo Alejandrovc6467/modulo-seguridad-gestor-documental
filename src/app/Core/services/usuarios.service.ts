@@ -11,6 +11,8 @@ export class UsuariosService {
   private http = inject(HttpClient);
   private urlBase = "http://gestordocumental.somee.com/api/Usuario";// esto se haria mas profesional creando un enviroment, que son ambiemtes de desarrolo uno para pruebas y otro para produccion
 
+  private urlObtenerUsuariosPorOficinaID = "http://gestordocumental.somee.com/api/Usuario/ObtenerUsuariosPorOficinaID";// esto se haria mas profesional creando un enviroment, que son ambiemtes de desarrolo uno para pruebas y otro para produccion
+
 
   constructor() { }
 
@@ -32,6 +34,12 @@ export class UsuariosService {
 
   public eliminarUsuario(id:number){
     return this.http.delete(`${this.urlBase}/${id}`);
+  }
+
+
+
+  public obtenerUsuariosPorOficina(id:number): Observable<UsuarioDTO[]>{
+    return this.http.get<UsuarioDTO[]>(`${this.urlObtenerUsuariosPorOficinaID}/${id}`);
   }
 
 }
