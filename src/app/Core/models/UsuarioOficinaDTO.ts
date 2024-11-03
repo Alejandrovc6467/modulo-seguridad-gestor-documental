@@ -1,7 +1,7 @@
 
 export interface usuarioOficinaDTO {
     usuarioID: number,
-    oficinaID: string;
+    oficinaID: number;
 }
 
 

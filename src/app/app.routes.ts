@@ -12,6 +12,7 @@ import { RolespermisosComponent } from './pages/rolespermisos/rolespermisos.comp
 import { OficinaspermiososComponent } from './pages/oficinaspermiosos/oficinaspermiosos.component';
 import { OficinasgestorComponent } from './pages/oficinasgestor/oficinasgestor.component';
 import { UsuariooficinaComponent } from './pages/usuariooficina/usuariooficina.component';
+import { administradorGuard } from './Core/guards/administrador.guard';
 
 
 
@@ -19,20 +20,20 @@ import { UsuariooficinaComponent } from './pages/usuariooficina/usuariooficina.c
 export const routes: Routes = [
 
     //inicie en Consultas por default
-    {path:'', component:UsuariosComponent},
+    {path:'', component:UsuariosComponent, canActivate:[administradorGuard]},
 
    
 
     
-    {path: 'oficinas', component:OficinasComponent},
-    {path: 'oficinaspermisos', component:OficinaspermiososComponent},
-    {path: 'oficinasgestor', component:OficinasgestorComponent},
-    {path: 'usuarios', component:UsuariosComponent},
-    {path: 'usuarionorma', component:UsuarionormaComponent},
-    {path: 'usuariOficina', component:UsuariooficinaComponent},
-    {path: 'roles', component:RolesComponent},
-    {path: 'rolespermisos', component:RolespermisosComponent},
-    {path: 'permisos', component:PermisosComponent},
+    {path: 'oficinas', component:OficinasComponent, canActivate:[administradorGuard]},
+    {path: 'oficinaspermisos', component:OficinaspermiososComponent, canActivate:[administradorGuard]},
+    {path: 'oficinasgestor', component:OficinasgestorComponent, canActivate:[administradorGuard]},
+    {path: 'usuarios', component:UsuariosComponent, canActivate:[administradorGuard]},
+    {path: 'usuarionorma', component:UsuarionormaComponent, canActivate:[administradorGuard]},
+    {path: 'usuariOficina', component:UsuariooficinaComponent, canActivate:[administradorGuard]},
+    {path: 'roles', component:RolesComponent, canActivate:[administradorGuard]},
+    {path: 'rolespermisos', component:RolespermisosComponent, canActivate:[administradorGuard]},
+    {path: 'permisos', component:PermisosComponent, canActivate:[administradorGuard]},
  
 
 
@@ -40,7 +41,7 @@ export const routes: Routes = [
 
     {path: 'iniciosesionprincipal', component:IniciosesionprincipalComponent},
     //si la ruta  no existe redirecciona a consultas
-    {path: '**', component:UsuariosComponent},
+    {path: '**', component:UsuariosComponent, canActivate:[administradorGuard]},
   
 
 

@@ -19,8 +19,10 @@ import Swal from 'sweetalert2';
 import { OficinaGestorIdsDTO, OficinaGestorIdsExtendidaDTO } from '../../Core/models/OficinaGestorIdsDTO';
 import { OficinaDTO } from '../../Core/models/OficinaDTO';
 import { OficinaGestorDTO } from '../../Core/models/OficinaGestorDTO';
-import { OficinasgestorasService } from '../../Core/services/oficinasgestoras.service';
+import { UsuariosService } from '../../Core/services/usuarios.service';
 import { OficinasgestoridsService } from '../../Core/services/oficinasgestorids.service';
+import { UsuariooficinaService } from '../../Core/services/usuariooficina.service';
+import { usuarioOficinaDTO, usuarioOficinaDTOExtendidaDTO } from '../../Core/models/UsuarioOficinaDTO';
 
 
 @Component({
@@ -32,20 +34,17 @@ import { OficinasgestoridsService } from '../../Core/services/oficinasgestorids.
 })
 export class UsuariooficinaComponent {
 
-  
-  permisoOficinaService = inject(PermisooficinaService);
-  oficinasgestorasService = inject(OficinasgestorasService);
-  oficinasgestoridsService = inject(OficinasgestoridsService);
+  usuariooficinaService = inject(UsuariooficinaService)
+  usuariosService = inject(UsuariosService);
   oficinaService = inject(OficinasService);
-  permisoService = inject(PermisosService);
-  listaOficinasGestores! : OficinaGestorIdsDTO[];
+
+  listaUsuariosOficinas! : usuarioOficinaDTO[];
   oficinas!: OficinaDTO[];
-  permisos!: PermisoDTO[];
-  oficinasGestoras!: OficinaGestorDTO[];
+  usuarios!: UsuarioDTO[];
 
 
-  listaOficinasGestoresDataSource = new MatTableDataSource<OficinaGestorIdsExtendidaDTO>([]);
-  displayedColumns: string[] = [ 'acciones', 'oficina', 'gestor'];
+  listaUsuariosOficinasDataSource = new MatTableDataSource<usuarioOficinaDTOExtendidaDTO>([]);
+  displayedColumns: string[] = [ 'acciones', 'usuario', 'oficina'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   textoBuscar: string = "";
   estaEditando: boolean = false;
@@ -63,8 +62,8 @@ export class UsuariooficinaComponent {
 
   private formbuilder = inject(FormBuilder);
   formulario = this.formbuilder.group({
+    usuarioID: [0, [Validators.required]],
     oficinaID: [0, [Validators.required]],
-    gestorID: [0, [Validators.required]],
   });
 
   obtenerOficinas() {
@@ -74,8 +73,8 @@ export class UsuariooficinaComponent {
   }
 
   obtenerOficinasGestoras(){
-    this.oficinasgestorasService.obtenerOficinasGestoras().subscribe(response => {
-      this.oficinasGestoras = response;
+    this.usuariosService.obtenerUsuarios().subscribe(response => {
+      this.usuarios = response;
   })};
 
 
@@ -87,8 +86,8 @@ export class UsuariooficinaComponent {
 
 
   obtenerUsuarios(){
-    this.oficinasgestoridsService.obtenerOficinasGestoresIds().subscribe(response => {
-      this.listaOficinasGestores = response;
+    this.usuariooficinaService.obtenerUsuariosOficinas().subscribe(response => {
+      this.listaUsuariosOficinas = response;
     });
   }
 
@@ -96,27 +95,25 @@ export class UsuariooficinaComponent {
 
   crearUsuario(){
     
+    
     if(this.formulario.invalid){
       alert("Formulario invalido");
     }else{
 
-      const oficinaGestorIdsDTO = this.formulario.value as OficinaGestorIdsDTO; 
-      
-      // Asegurarse de que clasificacionId sea un número válido
-      // permisoOficina.clasificacionID = Number(permisoOficina.clasificacionID);
-
-      console.log(oficinaGestorIdsDTO);
+      const usuarioOficinaDTO = this.formulario.value as usuarioOficinaDTO; 
+ 
+      console.log(usuarioOficinaDTO);
   
-      this.oficinasgestoridsService.crearOficinaGestor(oficinaGestorIdsDTO).subscribe(response => {
+      this.usuariooficinaService.crearUsuarioOficina(usuarioOficinaDTO).subscribe(response => {
 
         console.log(response);
         if(response){
           this.obtenerOficinasGestoresCargarTabla();
           this.formulario.reset();
           this.limpiarErroresFormulario();
-          Swal.fire('Creado!', 'Se ha asignado la oficina a una oficina gestor correctamente.', 'success');
+          Swal.fire('Creado!', 'Se ha asignado el usuario a la oficina correctamente.', 'success');
         }else{
-          Swal.fire('Error!', 'No se ha asignado la oficina a una oficina gestor correctamente.', 'error');
+          Swal.fire('Error!', 'No se ha asignado el usuario a la oficina correctamente.', 'error');
         }
        
       
@@ -132,6 +129,7 @@ export class UsuariooficinaComponent {
 
   
   eliminarUsuario(element: any) {
+    
     // Mostrar el SweetAlert para confirmar la eliminación
     Swal.fire({
         title: '¿Desea eliminar el oficina permiso?',
@@ -146,16 +144,16 @@ export class UsuariooficinaComponent {
         if (result.isConfirmed) {
             // Si el usuario confirma, proceder con la eliminación
             try {
-                this.permisoOficinaService.eliminarPermisoOficina(element).subscribe({
+                this.usuariooficinaService.eliminarUsuarioOficina(element).subscribe({
                     next: (response) => {
                         this.obtenerOficinasGestoresCargarTabla();
                         this.formulario.reset();
                         this.limpiarErroresFormulario();
-                        Swal.fire('Listo!', 'Se ha eliminado el oficina permiso correctamente.', 'success');
+                        Swal.fire('Listo!', 'Se ha eliminado correctamente.', 'success');
                     },
                     error: (err) => {
                         console.error('Error al eliminar el permiso:', err);
-                        Swal.fire('Error!', 'Ocurrió un error al intentar eliminar el oficina permiso.', 'error');
+                        Swal.fire('Error!', 'Ocurrió un error al intentar eliminar.', 'error');
                     }
                 });
             } catch (error) {
@@ -163,9 +161,10 @@ export class UsuariooficinaComponent {
                 Swal.fire('Error!', 'Se produjo un error inesperado.', 'error');
             }
         } else {
-            Swal.fire('Error!', 'El oficina permiso no ha sido eliminado.', 'error');
+            Swal.fire('Error!', 'No ha sido eliminado.', 'error');
         }
     });
+    
   }
 
     
@@ -176,34 +175,30 @@ export class UsuariooficinaComponent {
   // Otros **********************************************************
 
   obtenerOficinasGestoresCargarTabla(){
-    this.oficinasgestoridsService.obtenerOficinasGestoresIds().subscribe(response => {
-      this.listaOficinasGestores = response;
-      this.setTable(this.listaOficinasGestores);
+    this.usuariooficinaService.obtenerUsuariosOficinas().subscribe(response => {
+      this.listaUsuariosOficinas = response;
+      this.setTable(this.listaUsuariosOficinas);
     });
   }
 
-  setTable(data:OficinaGestorIdsDTO[]){
+  setTable(data:usuarioOficinaDTO[]){
 
-    //voy simular una espera con este setTime
+
     setTimeout(() => {
 
-      // Mapear los datos para agregar el nombre de la clasificación
-      const dataConClasificacionNombre: OficinaGestorIdsExtendidaDTO[] = data.map(oficinaGestorLista => {
-
-        const oficina = this.oficinas.find(oficina => oficina.id === oficinaGestorLista.oficinaID);
-        const oficinaGestor = this.oficinasGestoras.find(oficinaGestor => oficinaGestor.id === oficinaGestorLista.gestorID);
-        return {
-          ...oficinaGestorLista,
-         
-          oficinaNombre: oficina ? oficina.nombre : 'Sin nombre',
-          gestorNombre: oficinaGestor ? oficinaGestor.nombre : 'Sin nombre'
-
-        
-        };
+      const dataConClasificacionNombre: usuarioOficinaDTOExtendidaDTO[] = data.map(usuarioOficina => {
+      const oficina = this.oficinas.find(oficina => oficina.id === usuarioOficina.oficinaID);
+      const usuario = this.usuarios.find(usuario => usuario.id === usuarioOficina.usuarioID);
+      return {
+        ...usuarioOficina,
+        nombreUsuario: usuario ? usuario.nombre : 'Sin nombre',
+        nombreOficina: oficina ? oficina.nombre : 'Sin nombre'
+      };
       });
-      // Configurar el DataSource con los datos modificados
-      this.listaOficinasGestoresDataSource = new MatTableDataSource<OficinaGestorIdsExtendidaDTO>(dataConClasificacionNombre);
-      this.listaOficinasGestoresDataSource.paginator = this.paginator;
+
+  
+      this.listaUsuariosOficinasDataSource = new MatTableDataSource<usuarioOficinaDTOExtendidaDTO>(dataConClasificacionNombre);
+      this.listaUsuariosOficinasDataSource.paginator = this.paginator;
 
     }, 3000);
   }
@@ -239,6 +234,7 @@ export class UsuariooficinaComponent {
   }
  
   onSearchChange(event: any) {
+    /*
     const filterValue = event.target.value?.trim().toLowerCase() || '';
     if (!filterValue) {
       // Si esta vacio, mostrar toda la lista
@@ -246,6 +242,7 @@ export class UsuariooficinaComponent {
       return;
     }
     //pude haber hecho todo el filtro aqui, pero se requeria la necesidad del boton buscar
+    */
   }
 
 

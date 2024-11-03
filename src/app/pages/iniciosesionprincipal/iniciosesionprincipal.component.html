@@ -5,16 +5,18 @@
         </div>
         <div class="contenedor_formulario_logueo">
             <h2>Módulo Seguridad <br> Gestor Documental</h2>
-            <form action="">
+            <form (submit)="loggin()"[formGroup]="formulario">
                 <div class="input_contenedor_logueo">
                     <label for="">Usuario</label>
-                    <input type="text">
+                    <input type="text" [formControl]="formulario.controls.correo">
                 </div>
+
                 <div class="input_contenedor_logueo">
                     <label for="">Contraseña</label>
-                    <input type="password">
+                    <input type="password" [formControl]="formulario.controls.password">
                 </div>
-                <button type="submit" class="btn_amarillo">Iniciar Sesión</button>
+                <button type="submit" [disabled]="formulario.invalid" class="btn_amarillo">Iniciar Sesión</button>
+               
             </form>
             <p class="derechos_logueo">Copyright © 2024 Poder Judicial.</p>
         </div>
