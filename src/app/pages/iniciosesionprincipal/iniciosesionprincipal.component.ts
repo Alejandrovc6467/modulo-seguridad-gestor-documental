@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import Swal from 'sweetalert2';
+import { SeguridadService } from '../../Core/services/seguridad.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-iniciosesionprincipal',
@@ -17,25 +19,75 @@ import Swal from 'sweetalert2';
 })
 export class IniciosesionprincipalComponent {
 
+  seguridadService = inject(SeguridadService);
+  router = inject(Router);
 
 
   private formbuilder = inject(FormBuilder);
   formulario = this.formbuilder.group({
-    correo: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+    user: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });
 
 
 
-  loggin(){
-
-    console.log(this.formulario.value.correo);
-    console.log(this.formulario.value.password);
+  loggin(): void {
+    if (this.formulario.invalid) {
+      this.mostrarErrores();
+      return;
+    }
+  
+    this.seguridadService.loggin2(this.formulario.value.user!, this.formulario.value.password!).subscribe({
+      next: () => this.router.navigate(['/usuarios']),
+      error: (err) => {
+        console.error("Error al iniciar", err);
+        this.errorLoggin();
+      },
+    });
+    
   }
 
 
 
-  
+  mostrarErrores(): void{
+
+    // Obtener elemento del DOM
+    const mensajeDiv = document.querySelector('.mensaje') as HTMLElement;
+      
+    // Construir mensaje de error
+    let mensajeError = '';
+    
+    if (this.formulario.controls.user.errors) {
+      if (this.formulario.controls.user.errors['required']) {
+        mensajeError += 'El usuario es requerido<br>';
+      }
+      if (this.formulario.controls.user.errors['email']) {
+        mensajeError += 'El formato del email es inválido<br>';
+      }
+    }
+    
+    if (this.formulario.controls.password.errors?.['required']) {
+      mensajeError += 'La contraseña es requerida<br>';
+    }
+    
+    // Mostrar mensaje
+    if (mensajeDiv) {
+      mensajeDiv.innerHTML = mensajeError;
+      mensajeDiv.style.color = 'rgb(89, 94, 110)';
+
+    }
+    
+    return;
+  }
+
+  errorLoggin():void {
+    console.error('Error al iniciar');
+    const mensajeDiv = document.querySelector('.mensaje') as HTMLElement;
+    if (mensajeDiv) {
+      mensajeDiv.innerHTML = 'Error al iniciar sesión.';
+      mensajeDiv.style.color = 'rgb(89, 94, 110)';   
+    }
+  }
 
 
 }

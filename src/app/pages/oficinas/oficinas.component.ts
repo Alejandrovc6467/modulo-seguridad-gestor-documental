@@ -12,7 +12,7 @@ import { OficinasService } from '../../Core/services/oficinas.service';
 import { OficinasgestorasService } from '../../Core/services/oficinasgestoras.service';
 import { OficinasgestoridsService } from '../../Core/services/oficinasgestorids.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -21,6 +21,8 @@ import { OficinaDTO } from '../../Core/models/OficinaDTO';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import { OficinaGestorIdsDTO } from '../../Core/models/OficinaGestorIdsDTO';
+import { CustomMatPaginatorIntlComponent } from '../../Core/Componentes/custom-mat-paginator-intl/custom-mat-paginator-intl.component';
+
 
 
 
@@ -29,7 +31,10 @@ import { OficinaGestorIdsDTO } from '../../Core/models/OficinaGestorIdsDTO';
   standalone: true,
   imports: [CommonModule,MatButtonModule,  MatFormFieldModule, MatSelectModule,ReactiveFormsModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, FormsModule,MatCheckboxModule, MatRadioModule],
   templateUrl: './oficinas.component.html',
-  styleUrl: './oficinas.component.css'
+  styleUrl: './oficinas.component.css',
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntlComponent }
+  ]
 })
 export class OficinasComponent {
 

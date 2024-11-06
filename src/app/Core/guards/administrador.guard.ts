@@ -6,16 +6,16 @@ export const administradorGuard: CanActivateFn = (route, state) => {
 
   /** hacer un guard nuevo (un archivo) para cada rol, y hacerlo similar a este */
 
-
-  const router = inject(Router);
   const seguridadService = inject(SeguridadService);
+  const router = inject(Router);
 
 
-  if(seguridadService.obtenerRol() === "administrador"){
+  //quitar P  este es solo para pruebas
+  if(seguridadService.isAuthenticatedP()){
     return true;
+  }else{
+    return router.navigate(['/iniciosesionprincipal']);
   }
 
-  router.navigate(['/iniciosesionprincipal']);
-  return true;
-  
+
 };

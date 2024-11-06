@@ -13,35 +13,37 @@ import { OficinaspermiososComponent } from './pages/oficinaspermiosos/oficinaspe
 import { OficinasgestorComponent } from './pages/oficinasgestor/oficinasgestor.component';
 import { UsuariooficinaComponent } from './pages/usuariooficina/usuariooficina.component';
 import { administradorGuard } from './Core/guards/administrador.guard';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { autenticaionGuard } from './Core/guards/autenticaion.guard';
 
 
 
 
 export const routes: Routes = [
 
-    //inicie en Consultas por default
-    {path:'', component:UsuariosComponent, canActivate:[administradorGuard]},
-
-   
-
-    
-    {path: 'oficinas', component:OficinasComponent, canActivate:[administradorGuard]},
-    {path: 'oficinaspermisos', component:OficinaspermiososComponent, canActivate:[administradorGuard]},
-    {path: 'oficinasgestor', component:OficinasgestorComponent, canActivate:[administradorGuard]},
-    {path: 'usuarios', component:UsuariosComponent, canActivate:[administradorGuard]},
-    {path: 'usuarionorma', component:UsuarionormaComponent, canActivate:[administradorGuard]},
-    {path: 'usuariOficina', component:UsuariooficinaComponent, canActivate:[administradorGuard]},
-    {path: 'roles', component:RolesComponent, canActivate:[administradorGuard]},
-    {path: 'rolespermisos', component:RolespermisosComponent, canActivate:[administradorGuard]},
-    {path: 'permisos', component:PermisosComponent, canActivate:[administradorGuard]},
- 
-
-
+    {
+        path: '',
+        component: SidebarComponent,
+        children: [
+          { path: 'oficinas', component: OficinasComponent, canActivate:[administradorGuard]},
+          { path: 'oficinaspermisos', component: OficinaspermiososComponent, canActivate:[administradorGuard]},
+          { path: 'oficinasgestor', component: OficinasgestorComponent, canActivate:[administradorGuard] },
+          { path: 'usuarios', component: UsuariosComponent, canActivate:[administradorGuard] },
+          { path: 'usuarionorma', component: UsuarionormaComponent, canActivate:[administradorGuard] },
+          { path: 'usuariOficina', component: UsuariooficinaComponent, canActivate:[administradorGuard]},
+          { path: 'roles', component: RolesComponent, canActivate:[administradorGuard] },
+          { path: 'rolespermisos', component: RolespermisosComponent, canActivate:[administradorGuard] },
+          { path: 'permisos', component: PermisosComponent, canActivate:[administradorGuard] },
+          { path: '', redirectTo: 'usuarios', pathMatch: 'full' }
+        ]
+    },
 
 
-    {path: 'iniciosesionprincipal', component:IniciosesionprincipalComponent},
-    //si la ruta  no existe redirecciona a consultas
-    {path: '**', component:UsuariosComponent, canActivate:[administradorGuard]},
+    {path: 'iniciosesionprincipal', component:IniciosesionprincipalComponent, canActivate:[autenticaionGuard]},
+
+
+    //si la ruta  no existe redirecciona a usuarios, obvio si no esta autenticado pues nunca entra aqui y lo manda al loggin
+    {path: '**', redirectTo:'usuarios'},
   
 
 
