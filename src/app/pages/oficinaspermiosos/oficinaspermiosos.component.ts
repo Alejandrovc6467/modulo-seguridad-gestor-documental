@@ -13,13 +13,14 @@ import { PermisooficinaService } from '../../Core/services/permisooficina.servic
 import { OficinasService } from '../../Core/services/oficinas.service';
 import { PermisosService } from '../../Core/services/permisos.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { PermisoRolDTO, PermisoRolExtendidaDTO } from '../../Core/models/PermisoRolDTO';
 import { OficinaDTO } from '../../Core/models/OficinaDTO';
 import { PermisoOficinaDTO, PermisoOficinaExtendidaDTO } from '../../Core/models/PermisoOficinaDTO';
+import { CustomMatPaginatorIntlComponent } from '../../Core/Componentes/custom-mat-paginator-intl/custom-mat-paginator-intl.component';
 
 
 @Component({
@@ -27,7 +28,10 @@ import { PermisoOficinaDTO, PermisoOficinaExtendidaDTO } from '../../Core/models
   standalone: true,
   imports: [CommonModule,MatButtonModule,  MatFormFieldModule, MatSelectModule,ReactiveFormsModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, FormsModule],
   templateUrl: './oficinaspermiosos.component.html',
-  styleUrl: './oficinaspermiosos.component.css'
+  styleUrl: './oficinaspermiosos.component.css',
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntlComponent }
+  ]
 })
 export class OficinaspermiososComponent {
 

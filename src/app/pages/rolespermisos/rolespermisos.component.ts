@@ -13,18 +13,22 @@ import { PermisorolService } from '../../Core/services/permisorol.service';
 import { RolesService } from '../../Core/services/roles.service';
 import { PermisosService } from '../../Core/services/permisos.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { PermisoRolDTO, PermisoRolExtendidaDTO } from '../../Core/models/PermisoRolDTO';
+import { CustomMatPaginatorIntlComponent } from '../../Core/Componentes/custom-mat-paginator-intl/custom-mat-paginator-intl.component';
 
 @Component({
   selector: 'app-rolespermisos',
   standalone: true,
   imports: [CommonModule,MatButtonModule,  MatFormFieldModule, MatSelectModule,ReactiveFormsModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, FormsModule],
   templateUrl: './rolespermisos.component.html',
-  styleUrl: './rolespermisos.component.css'
+  styleUrl: './rolespermisos.component.css',
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntlComponent }
+  ]
 })
 export class RolespermisosComponent {
 

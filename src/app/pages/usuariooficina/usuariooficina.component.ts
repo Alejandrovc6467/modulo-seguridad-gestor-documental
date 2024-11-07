@@ -12,7 +12,7 @@ import { PermisooficinaService } from '../../Core/services/permisooficina.servic
 import { OficinasService } from '../../Core/services/oficinas.service';
 import { PermisosService } from '../../Core/services/permisos.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -23,6 +23,7 @@ import { UsuariosService } from '../../Core/services/usuarios.service';
 import { OficinasgestoridsService } from '../../Core/services/oficinasgestorids.service';
 import { UsuariooficinaService } from '../../Core/services/usuariooficina.service';
 import { usuarioOficinaDTO, usuarioOficinaDTOExtendidaDTO } from '../../Core/models/UsuarioOficinaDTO';
+import { CustomMatPaginatorIntlComponent } from '../../Core/Componentes/custom-mat-paginator-intl/custom-mat-paginator-intl.component';
 
 
 @Component({
@@ -30,7 +31,10 @@ import { usuarioOficinaDTO, usuarioOficinaDTOExtendidaDTO } from '../../Core/mod
   standalone: true,
   imports: [CommonModule,MatButtonModule,  MatFormFieldModule, MatSelectModule,ReactiveFormsModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, FormsModule],
   templateUrl: './usuariooficina.component.html',
-  styleUrl: './usuariooficina.component.css'
+  styleUrl: './usuariooficina.component.css',
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntlComponent }
+  ]
 })
 export class UsuariooficinaComponent {
 

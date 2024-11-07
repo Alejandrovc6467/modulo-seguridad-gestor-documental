@@ -12,7 +12,7 @@ import { PermisooficinaService } from '../../Core/services/permisooficina.servic
 import { OficinasService } from '../../Core/services/oficinas.service';
 import { PermisosService } from '../../Core/services/permisos.service';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -21,13 +21,17 @@ import { OficinaDTO } from '../../Core/models/OficinaDTO';
 import { OficinaGestorDTO } from '../../Core/models/OficinaGestorDTO';
 import { OficinasgestorasService } from '../../Core/services/oficinasgestoras.service';
 import { OficinasgestoridsService } from '../../Core/services/oficinasgestorids.service';
+import { CustomMatPaginatorIntlComponent } from '../../Core/Componentes/custom-mat-paginator-intl/custom-mat-paginator-intl.component';
 
 @Component({
   selector: 'app-oficinasgestor',
   standalone: true,
   imports: [CommonModule,MatButtonModule,  MatFormFieldModule, MatSelectModule,ReactiveFormsModule, MatInputModule, MatTableModule, MatPaginatorModule, MatIconModule, FormsModule],
   templateUrl: './oficinasgestor.component.html',
-  styleUrl: './oficinasgestor.component.css'
+  styleUrl: './oficinasgestor.component.css',
+  providers: [
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntlComponent }
+  ]
 })
 export class OficinasgestorComponent {
 

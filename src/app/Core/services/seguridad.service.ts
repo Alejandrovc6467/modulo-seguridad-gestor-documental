@@ -54,6 +54,9 @@ export class SeguridadService {
     this.router.navigate(['/iniciosesionprincipal']);
   }
 
+  //aqui hacer un setRol, setearlo en el login, que reciba el JWT y de ahi lo tomo
+  //getRol() 
+
   
   //para pruebas ********************************************************************
   loggin2(user: string, password: string): Observable<any> {
