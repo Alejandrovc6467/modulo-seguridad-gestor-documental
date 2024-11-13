@@ -92,8 +92,21 @@ export class UsuariosComponent {
   crearUsuario(){
     
     if(this.formulario.invalid){
-      alert("Formulario invalido");
-    }else{
+      console.log("Formulario invalido");
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas crear el usuario?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, crear',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
 
       const usuario = this.formulario.value as UsuarioDTO; 
       
@@ -107,14 +120,30 @@ export class UsuariosComponent {
         this.obtenerCategoriasCargarTabla();
         this.formulario.reset();
         this.limpiarErroresFormulario();
-        Swal.fire('Creada!', 'La categoría ha sido creada.', 'success');
+        Swal.fire('Creada!', 'El usuario ha sido creado.', 'success');
       });
 
+
     }
+  });
+    
   
   }
 
   actualizarUsuario() {
+
+
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas modificar el usuario?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
 
     
     if (!this.usuarioSeleccinado) return;
@@ -135,8 +164,12 @@ export class UsuariosComponent {
         this.obtenerCategoriasCargarTabla();
         this.cancelarEdicion();
         this.limpiarErroresFormulario();
-        Swal.fire('Editada!', 'La categoría ha sido editada.', 'success');
+        Swal.fire('Editada!', 'El usuario ha sido modificado.', 'success');
       });
+
+
+    }
+  });
 
       
   }

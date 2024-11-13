@@ -90,24 +90,43 @@ export class OficinasComponent {
   crearOficina(){
     
     if(this.formulario.invalid){
-      alert("Formulario invalido");
-    }else{
-
-      const oficina = this.formulario.value as OficinaDTO; 
-   
-      console.log(oficina);
-  
-      this.oficinasService.crearOficina(oficina).subscribe(response => {
-          console.log(response);
-          this.obtenerCategoriasCargarTabla();
-          this.formulario.reset();
-          this.limpiarErroresFormulario();
-          Swal.fire('Creada!', 'La Oficina ha sido creada.', 'success');
-      });
-
       return;
-
     }
+
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas crear la oficina?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+
+        const oficina = this.formulario.value as OficinaDTO; 
+   
+        console.log(oficina);
+    
+        this.oficinasService.crearOficina(oficina).subscribe(response => {
+            console.log(response);
+            this.obtenerCategoriasCargarTabla();
+            this.formulario.reset();
+            this.limpiarErroresFormulario();
+            Swal.fire('Creada!', 'La Oficina ha sido creada.', 'success');
+        });
+  
+  
+
+
+      }
+    });
+
+    
+
+    
     
   }
 

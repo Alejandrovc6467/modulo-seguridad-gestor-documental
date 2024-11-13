@@ -71,8 +71,21 @@ export class RolesComponent {
   crearCategoria(){
     
     if(this.formulario.invalid){
-      alert("Formulario invalido");
-    }else{
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas crear el rol?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
 
       const categoria = this.formulario.value as RolDTO; 
    
@@ -95,27 +108,50 @@ export class RolesComponent {
        
       });
 
-    }
+     }
+    });
 
   
   
   }
 
   actualizarCategoria() {
-    if (!this.categoriaSeleccionada) return;
-      const categoriaActualizada: RolDTO = {
-        id: this.categoriaSeleccionada.id,
-        nombre: this.formulario.value.nombre!,
-        descripcion: this.formulario.value.descripcion!,
-        activo : true
-      };
-      this.rolService.actualizarCategoria(categoriaActualizada).subscribe(response => {
-        console.log(response);
-        this.obtenerCategoriasCargarTabla();
-        this.cancelarEdicion();
-        this.limpiarErroresFormulario();
-        Swal.fire('Editado!', 'El permiso ha sido editado.', 'success');
-      });
+
+
+    
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas modificar el rol?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+
+        if (!this.categoriaSeleccionada) return;
+        const categoriaActualizada: RolDTO = {
+          id: this.categoriaSeleccionada.id,
+          nombre: this.formulario.value.nombre!,
+          descripcion: this.formulario.value.descripcion!,
+          activo : true
+        };
+        this.rolService.actualizarCategoria(categoriaActualizada).subscribe(response => {
+          console.log(response);
+          this.obtenerCategoriasCargarTabla();
+          this.cancelarEdicion();
+          this.limpiarErroresFormulario();
+          Swal.fire('Editado!', 'El rol ha sido modificado.', 'success');
+        });
+        
+     }
+    });
+    
+
+   
   }
 
   editarCategoria(element: RolDTO) {
