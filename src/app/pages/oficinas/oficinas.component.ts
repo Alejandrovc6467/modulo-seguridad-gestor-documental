@@ -101,6 +101,7 @@ export class OficinasComponent {
           console.log(response);
           this.obtenerCategoriasCargarTabla();
           this.formulario.reset();
+          this.formulario.controls.gestor.setValue(false);
           this.limpiarErroresFormulario();
           Swal.fire('Creada!', 'La Oficina ha sido creada.', 'success');
       });

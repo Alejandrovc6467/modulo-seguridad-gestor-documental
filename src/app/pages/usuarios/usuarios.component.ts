@@ -96,7 +96,8 @@ export class UsuariosComponent {
     }else{
 
       const usuario = this.formulario.value as UsuarioDTO; 
-      
+      usuario.activo = true;
+      usuario.eliminado = false;
       // Asegurarse de que clasificacionId sea un número válido
       // usuario.clasificacionID = Number(usuario.clasificacionID);
 
@@ -107,7 +108,7 @@ export class UsuariosComponent {
         this.obtenerCategoriasCargarTabla();
         this.formulario.reset();
         this.limpiarErroresFormulario();
-        Swal.fire('Creada!', 'La categoría ha sido creada.', 'success');
+        Swal.fire('Creada!', 'El usuario ha sido creado.', 'success');
       });
 
     }
@@ -135,7 +136,7 @@ export class UsuariosComponent {
         this.obtenerCategoriasCargarTabla();
         this.cancelarEdicion();
         this.limpiarErroresFormulario();
-        Swal.fire('Editada!', 'La categoría ha sido editada.', 'success');
+        Swal.fire('Editada!', 'El usuario ha sido editado.', 'success');
       });
 
       
