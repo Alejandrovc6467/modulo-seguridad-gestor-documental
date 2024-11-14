@@ -91,7 +91,7 @@ export class UsuarionormaComponent {
 
   obtenerOficinas() {
     this.oficinaService.obtenerOficinas().subscribe(response => {
-        this.oficinas = response.filter((oficina: OficinaDTO) => !oficina.gestor);
+        this.oficinas = response;
     });
   }
 

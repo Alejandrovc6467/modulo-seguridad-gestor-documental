@@ -165,11 +165,9 @@ export class UsuariosComponent {
         this.obtenerCategoriasCargarTabla();
         this.cancelarEdicion();
         this.limpiarErroresFormulario();
-<<<<<<< HEAD
         Swal.fire('Editada!', 'El usuario ha sido editado.', 'success');
-=======
-        Swal.fire('Editada!', 'El usuario ha sido modificado.', 'success');
->>>>>>> e88e9e4fe9094747978e6cc345fdc1a8a5f0a545
+
+
       });
 
 
