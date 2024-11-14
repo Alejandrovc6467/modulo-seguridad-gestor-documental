@@ -136,8 +136,20 @@ export class UsuarionormaComponent {
 
 
   crearUsuario(){
-    
-    
+
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas crear la norma usuario?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+         
       if(this.formulario.value.normaID != 0  && this.formulario.value.oficinaID != 0  &&  this.formulario.value.usuarioID != 0  ){
         
         const usuarioNormaDTO = {
@@ -165,6 +177,13 @@ export class UsuarionormaComponent {
         Swal.fire('Error!', 'Todos los campos son requeridos.', 'error');
       }
 
+      }
+    });
+  
+
+    
+   
+
   }
       
   
@@ -178,7 +197,7 @@ export class UsuarionormaComponent {
     
     // Mostrar el SweetAlert para confirmar la eliminación
     Swal.fire({
-        title: '¿Desea eliminar el oficina permiso?',
+        title: '¿Desea eliminar la norma usuario?',
         text: 'Esta acción no se puede deshacer.',
         icon: 'warning',
         showCancelButton: true,
@@ -206,8 +225,6 @@ export class UsuarionormaComponent {
                 console.error('Error en la operación de eliminación:', error);
                 Swal.fire('Error!', 'Se produjo un error inesperado.', 'error');
             }
-        } else {
-            Swal.fire('Error!', 'No ha sido eliminado.', 'error');
         }
     });
     
