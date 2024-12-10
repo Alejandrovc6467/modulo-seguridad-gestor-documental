@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { PermisoDTO } from '../models/PermisoDTO';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UsuarioNormaDTO } from '../models/UsuarioNormaDTO';

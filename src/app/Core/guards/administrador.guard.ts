@@ -11,7 +11,7 @@ export const administradorGuard: CanActivateFn = (route, state) => {
 
 
   //quitar P  este es solo para pruebas
-  if(seguridadService.isAuthenticatedP()){
+  if(seguridadService.isAuthenticated()){
     return true;
   }else{
     return router.navigate(['/iniciosesionprincipal']);

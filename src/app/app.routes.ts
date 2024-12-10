@@ -29,7 +29,6 @@ export const routes: Routes = [
           { path: 'oficinaspermisos', component: OficinaspermiososComponent, canActivate:[administradorGuard]},
           { path: 'oficinasgestor', component: OficinasgestorComponent, canActivate:[administradorGuard] },
           { path: 'usuarios', component: UsuariosComponent, canActivate:[administradorGuard] },
-          { path: 'usuarionorma', component: UsuarionormaComponent, canActivate:[administradorGuard] },
           { path: 'usuariOficina', component: UsuariooficinaComponent, canActivate:[administradorGuard]},
           { path: 'roles', component: RolesComponent, canActivate:[administradorGuard] },
           { path: 'rolespermisos', component: RolespermisosComponent, canActivate:[administradorGuard] },

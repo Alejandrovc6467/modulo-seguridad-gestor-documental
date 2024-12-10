@@ -24,7 +24,7 @@ export class SidebarComponent implements OnInit{
 
 
   logout(): void {
-    this.seguridadService.logout2();
+    this.seguridadService.logout();
   }
 
 

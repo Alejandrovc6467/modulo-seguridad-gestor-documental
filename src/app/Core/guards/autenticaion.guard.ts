@@ -13,7 +13,7 @@ export const autenticaionGuard: CanActivateFn = (route, state) => {
 
 
   //quitar P  este es solo para pruebas
-  if(seguridadService.isAuthenticatedP()){
+  if(seguridadService.isAuthenticated()){
     return router.navigate(['/usuarios']);
   }else{
     return true;

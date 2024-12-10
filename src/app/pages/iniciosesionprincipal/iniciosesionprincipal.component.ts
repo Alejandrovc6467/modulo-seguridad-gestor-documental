@@ -35,15 +35,30 @@ export class IniciosesionprincipalComponent {
     if (this.formulario.invalid) {
       this.mostrarErrores();
       return;
-    }
+    }  
   
-    this.seguridadService.loggin2(this.formulario.value.user!, this.formulario.value.password!).subscribe({
-      next: () => this.router.navigate(['/usuarios']),
-      error: (err) => {
-        console.error("Error al iniciar", err);
-        this.errorLoggin();
+    this.seguridadService.loggin(this.formulario.value.user!, this.formulario.value.password!)
+    .subscribe(
+      response => {
+
+        if (response.rolID === 1) {
+          this.router.navigate(['/usuarios']);
+          
+        }else{
+          this.errorLoggin();
+        }
+       
       },
-    });
+      error => {
+        // Aquí manejamos el error
+        if (error.status === 404) {
+          console.log("error");
+          this.errorLoggin();
+        } else {
+          alert('Ocurrió un error inesperado en el inicio de sesión.');
+        }
+      }
+    );
     
   }
 
